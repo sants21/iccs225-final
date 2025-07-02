@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
+    <data-source source="LOCAL" name="netflix_db_hc7f@dpg-d1ie1d2dbo4c73f05l70-a.singapore-postgres.render.com" uuid="43e903f7-7a48-45b7-aa8d-ea27f37755cc">
+      <driver-ref>postgresql</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql://dpg-d1ie1d2dbo4c73f05l70-a.singapore-postgres.render.com:5432/netflix_db_hc7f</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
+  </component>
+</project>
