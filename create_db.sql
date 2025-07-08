@@ -101,9 +101,9 @@ CREATE TABLE WatchHistory (
 
 DROP TABLE IF EXISTS Payment CASCADE;
 CREATE TABLE Payment (
-                         payment_id INT PRIMARY KEY,
-                         user_id INT,
-                         plan_id INT,
+                         payment_id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+                         user_id INT NOT NULL,
+                         plan_id INT NOT NULL,
                          paid_amount DECIMAL(5,2),
                          payment_date DATE,
                          expiry_date DATE,
@@ -262,18 +262,18 @@ VALUES
     (9, 5, 4, 2850, '2022-07-30 11:40:26'),
     (10, 9, 8, 5110, '2024-06-24 14:34:52');
 
-INSERT INTO Payment (payment_id, user_id, plan_id, paid_amount, payment_date, expiry_date)
-VALUES
-    (1, 7, 9, 17.31, '2023-10-06', '2025-03-01'),
-    (2, 3, 10, 18.71, '2023-06-18', '2024-06-12'),
-    (3, 7, 1, 7.99, '2023-11-06', '2024-08-01'),
-    (4, 8, 3, 15.99, '2021-01-20', '2023-09-12'),
-    (5, 6, 1, 7.99, '2023-12-07', '2024-04-06'),
-    (6, 5, 9, 17.31, '2020-05-03', '2024-08-25'),
-    (7, 7, 8, 19.67, '2021-06-01', '2021-12-01'),
-    (8, 8, 2, 12.99, '2024-06-17', '2025-05-03'),
-    (9, 9, 7, 9.04, '2023-02-08', '2023-05-02'),
-    (10, 6, 7, 9.04, '2022-02-18', '2023-12-16');
+INSERT INTO Payment (user_id, plan_id, paid_amount, payment_date, expiry_date)
+VALUES -- now omit payment_id since it is auto-generated
+    (7, 9, 17.31, '2023-10-06', '2025-03-01'),
+    (3, 10, 18.71, '2023-06-18', '2024-06-12'),
+    (7, 1, 7.99, '2023-11-06', '2024-08-01'),
+    (8, 3, 15.99, '2021-01-20', '2023-09-12'),
+    (6, 1, 7.99, '2023-12-07', '2024-04-06'),
+    (5, 9, 17.31, '2020-05-03', '2024-08-25'),
+    (7, 8, 19.67, '2021-06-01', '2021-12-01'),
+    (8, 2, 12.99, '2024-06-17', '2025-05-03'),
+    (9, 7, 9.04, '2023-02-08', '2023-05-02'),
+    (6, 7, 9.04, '2022-02-18', '2023-12-16');
 
 INSERT INTO Invoice (invoice_id, payment_id, issued_date, total_amount, tax_amount, billing_address, invoice_file_url)
 VALUES
