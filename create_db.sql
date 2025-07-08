@@ -1,7 +1,7 @@
 -- This script creates the database schema and insert dummy values ---
 DROP TABLE IF EXISTS SubscriptionPlan CASCADE;
 CREATE TABLE SubscriptionPlan (
-                                  subscription_plan_id INT PRIMARY KEY,
+                                  subscription_plan_id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
                                   name VARCHAR(100),
                                   price DECIMAL(5,2),
                                   resolution VARCHAR(50),
@@ -42,7 +42,7 @@ CREATE TABLE ProfileSetting (
 
 DROP TABLE IF EXISTS Content CASCADE;
 CREATE TABLE Content (
-                         content_id INT PRIMARY KEY,
+                         content_id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
                          content_title VARCHAR(255),
                          content_description TEXT,
                          content_type VARCHAR(20),
@@ -66,7 +66,7 @@ CREATE TABLE Episode (
 
 DROP TABLE IF EXISTS Genre CASCADE;
 CREATE TABLE Genre (
-                       genre_id INT PRIMARY KEY,
+                       genre_id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
                        genre_name VARCHAR(50)
 );
 
@@ -125,18 +125,36 @@ CREATE TABLE Invoice (
                          FOREIGN KEY (payment_id) REFERENCES Payment(payment_id)
 );
 
-INSERT INTO SubscriptionPlan (subscription_plan_id, name, price, resolution, max_streams)
+DROP TABLE IF EXISTS ContentUploadLog CASCADE;
+CREATE TABLE ContentUploadLog (
+                                  log_id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+                                  admin_id INT,
+                                  content_id INT,
+                                  uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                                  FOREIGN KEY (admin_id) REFERENCES AdminUser(admin_id),
+                                  FOREIGN KEY (content_id) REFERENCES Content(content_id)
+);
+
+DROP TABLE IF EXISTS AdminUser CASCADE;
+CREATE TABLE AdminUser (
+                           admin_id INT PRIMARY KEY,
+                           username VARCHAR(100) UNIQUE NOT NULL,
+                           password_hash VARCHAR(255) NOT NULL
+);
+
+
+INSERT INTO SubscriptionPlan (name, price, resolution, max_streams)
 VALUES
-    (1, 'Basic', 7.99, '480p', 1),
-    (2, 'Standard', 12.99, '720p', 2),
-    (3, 'Premium', 15.99, '1080p', 4),
-    (4, 'Ultra', 18.99, '4K', 4),
-    (5, 'Student', 19.23, '1080p', 3),
-    (6, 'Family', 6.37, '720p', 3),
-    (7, 'Mini', 9.04, '480p', 1),
-    (8, 'Mini', 19.67, '480p', 2),
-    (9, 'Student', 17.31, '480p', 3),
-    (10, 'Mini', 18.71, '480p', 2);
+    ('Basic', 7.99, '480p', 1),
+    ('Standard', 12.99, '720p', 2),
+    ('Premium', 15.99, '1080p', 4),
+    ('Ultra', 18.99, '4K', 4),
+    ('Student', 19.23, '1080p', 3),
+    ('Family', 6.37, '720p', 3),
+    ('Mini', 9.04, '480p', 1),
+    ('Mini', 19.67, '480p', 2),
+    ('Student', 17.31, '480p', 3),
+    ( 'Mini', 18.71, '480p', 2);
 
 INSERT INTO "User" (user_id, username, email_address, phone_number, subscription_plan_id, hashed_password)
 VALUES
@@ -164,31 +182,31 @@ VALUES
     (9, 4, 'Laurie', 18, 'https://www.lorempixel.com/684/805'),
     (10, 1, 'Brett', 13, 'https://placekitten.com/263/358');
 
-INSERT INTO ProfileSetting (setting_id, profile_id, display_language, subtitle_language, autoplay, notification)
+INSERT INTO ProfileSetting (profile_id, display_language, subtitle_language, autoplay, notification)
 VALUES
-    (1, 1, 'fr', 'fr', FALSE, FALSE),
-    (2, 2, 'en', 'fr', FALSE, TRUE),
-    (3, 3, 'es', 'de', TRUE, TRUE),
-    (4, 4, 'de', 'de', TRUE, FALSE),
-    (5, 5, 'de', 'de', TRUE, TRUE),
-    (6, 6, 'de', 'de', FALSE, TRUE),
-    (7, 7, 'fr', 'en', TRUE, FALSE),
-    (8, 8, 'es', 'de', FALSE, TRUE),
-    (9, 9, 'en', 'de', TRUE, FALSE),
-    (10, 10, 'de', 'es', TRUE, TRUE);
+    (1, 'fr', 'fr', FALSE, FALSE),
+    ( 2, 'en', 'fr', FALSE, TRUE),
+    (3, 'es', 'de', TRUE, TRUE),
+    ( 4, 'de', 'de', TRUE, FALSE),
+    ( 5, 'de', 'de', TRUE, TRUE),
+    ( 6, 'de', 'de', FALSE, TRUE),
+    (7, 'fr', 'en', TRUE, FALSE),
+    ( 8, 'es', 'de', FALSE, TRUE),
+    ( 9, 'en', 'de', TRUE, FALSE),
+    (10, 'de', 'es', TRUE, TRUE);
 
-INSERT INTO Content (content_id, content_title, content_description, content_type, duration, genres, release_date, age_rating)
+INSERT INTO Content (content_title, content_description, content_type, duration, genres, release_date, age_rating)
 VALUES
-    (1, 'Stranger Things', 'A group of kids uncover supernatural mysteries in a small town.', 'Series', 62, 'Action', '2017-11-12', 'PG'),
-    (2, 'Breaking Bad', 'A chemistry teacher turns to making meth after a terminal diagnosis.', 'Series', 46, 'Historical', '2022-11-19', 'PG-13'),
-    (3, 'The Witcher', 'A mutated monster hunter struggles to find his place in a twisted world.', 'Series', 52, 'Crime', '2023-06-18', 'G'),
-    (4, 'Money Heist', 'A criminal mastermind leads a heist on the Royal Mint of Spain.', 'Series', 54, 'Thriller', '2019-04-21', 'PG'),
-    (5, 'Narcos', 'A DEA agent tracks the rise of the cocaine trade in Colombia.', 'Series', 60, 'Sci-Fi', '2017-11-25', 'R'),
-    (6, 'Inception', 'A thief who steals corporate secrets through dream-sharing is given a task to plant an idea.', 'Movie', 124, 'Historical', '2020-08-16', 'PG'),
-    (7, 'The Irishman', 'An aging hitman recalls his past involvement with the mob.', 'Movie', 109, 'Thriller', '2015-09-21', 'G'),
-    (8, 'Parasite', 'A poor family schemes to become employed by a wealthy household.', 'Movie', 155, 'Historical', '2015-10-14', 'R'),
-    (9, 'The Social Network', 'The story behind the creation of Facebook.', 'Movie', 173, 'Sci-Fi', '2020-03-19', 'PG'),
-    (10, 'Interstellar', 'A team travels through a wormhole in search of a new home for humanity.', 'Movie', 114, 'Crime', '2016-02-05', 'R');
+    ('Stranger Things', 'A group of kids uncover supernatural mysteries in a small town.', 'Series', 62, 'Action', '2017-11-12', 'PG'),
+    ( 'Breaking Bad', 'A chemistry teacher turns to making meth after a terminal diagnosis.', 'Series', 46, 'Historical', '2022-11-19', 'PG-13'),
+    ( 'The Witcher', 'A mutated monster hunter struggles to find his place in a twisted world.', 'Series', 52, 'Crime', '2023-06-18', 'G'),
+    ( 'Money Heist', 'A criminal mastermind leads a heist on the Royal Mint of Spain.', 'Series', 54, 'Thriller', '2019-04-21', 'PG'),
+    ( 'Narcos', 'A DEA agent tracks the rise of the cocaine trade in Colombia.', 'Series', 60, 'Sci-Fi', '2017-11-25', 'R'),
+    ( 'Inception', 'A thief who steals corporate secrets through dream-sharing is given a task to plant an idea.', 'Movie', 124, 'Historical', '2020-08-16', 'PG'),
+    ( 'The Irishman', 'An aging hitman recalls his past involvement with the mob.', 'Movie', 109, 'Thriller', '2015-09-21', 'G'),
+    ( 'Parasite', 'A poor family schemes to become employed by a wealthy household.', 'Movie', 155, 'Historical', '2015-10-14', 'R'),
+    ( 'The Social Network', 'The story behind the creation of Facebook.', 'Movie', 173, 'Sci-Fi', '2020-03-19', 'PG'),
+    ( 'Interstellar', 'A team travels through a wormhole in search of a new home for humanity.', 'Movie', 114, 'Crime', '2016-02-05', 'R');
 
 INSERT INTO Episode (episode_id, content_id, title, season, episode_number, duration, episode_url)
 VALUES
@@ -203,18 +221,18 @@ VALUES
     (9, 9, 'The Social Network', 1, 1, 173, 'http://www.hopkins.com/'),
     (10, 10, 'Interstellar', 1, 1, 114, 'https://freeman-miles.com/');
 
-INSERT INTO Genre (genre_id, genre_name)
+INSERT INTO Genre (genre_name)
 VALUES
-    (1, 'Action'),
-    (2, 'Drama'),
-    (3, 'Comedy'),
-    (4, 'Thriller'),
-    (5, 'Horror'),
-    (6, 'Sci-Fi'),
-    (7, 'Romance'),
-    (8, 'Fantasy'),
-    (9, 'Animation'),
-    (10, 'Documentary');
+    ('Action'),
+    ('Drama'),
+    ('Comedy'),
+    ('Thriller'),
+    ('Horror'),
+    ('Sci-Fi'),
+    ('Romance'),
+    ('Fantasy'),
+    ('Animation'),
+    ( 'Documentary');
 
 INSERT INTO ContentGenre (content_id, genre_id)
 VALUES
