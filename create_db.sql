@@ -31,8 +31,8 @@ CREATE TABLE Profile (
 
 DROP TABLE IF EXISTS ProfileSetting CASCADE;
 CREATE TABLE ProfileSetting (
-                                setting_id INT PRIMARY KEY,
-                                profile_id INT,
+                                setting_id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+                                profile_id INT NOT NULL UNIQUE,
                                 display_language VARCHAR(20),
                                 subtitle_language VARCHAR(20),
                                 autoplay BOOLEAN,
@@ -89,12 +89,14 @@ CREATE TABLE Watchlist (
 );
 
 DROP TABLE IF EXISTS WatchHistory CASCADE;
+
 CREATE TABLE WatchHistory (
-                              history_id INT PRIMARY KEY,
-                              profile_id INT,
-                              content_id INT,
+                              history_id SERIAL PRIMARY KEY,
+                              profile_id INT NOT NULL,
+                              content_id INT NOT NULL,
+                              watched_at TIMESTAMP NOT NULL DEFAULT NOW(),
                               timestamp INT,
-                              watched_at timestamp,
+                              CONSTRAINT unique_watch_history UNIQUE (profile_id, content_id),
                               FOREIGN KEY (profile_id) REFERENCES Profile(profile_id),
                               FOREIGN KEY (content_id) REFERENCES Content(content_id)
 );
@@ -257,23 +259,23 @@ VALUES
     (4, 10, 8, 5770, '2022-09-29 11:00:17'),
     (5, 2, 8, 5625, '2020-03-10 21:38:32'),
     (6, 1, 10, 1069, '2024-01-03 04:09:36'),
-    (7, 1, 10, 6344, '2025-03-05 05:17:40'),
+    (7, 3, 10, 6344, '2025-03-05 05:17:40'),
     (8, 5, 2, 1682, '2024-07-19 23:12:39'),
     (9, 5, 4, 2850, '2022-07-30 11:40:26'),
     (10, 9, 8, 5110, '2024-06-24 14:34:52');
 
 INSERT INTO Payment (user_id, plan_id, paid_amount, payment_date, expiry_date)
 VALUES -- now omit payment_id since it is auto-generated
-    (7, 9, 17.31, '2023-10-06', '2025-03-01'),
-    (3, 10, 18.71, '2023-06-18', '2024-06-12'),
-    (7, 1, 7.99, '2023-11-06', '2024-08-01'),
-    (8, 3, 15.99, '2021-01-20', '2023-09-12'),
-    (6, 1, 7.99, '2023-12-07', '2024-04-06'),
-    (5, 9, 17.31, '2020-05-03', '2024-08-25'),
-    (7, 8, 19.67, '2021-06-01', '2021-12-01'),
-    (8, 2, 12.99, '2024-06-17', '2025-05-03'),
-    (9, 7, 9.04, '2023-02-08', '2023-05-02'),
-    (6, 7, 9.04, '2022-02-18', '2023-12-16');
+       (7, 9, 17.31, '2023-10-06', '2025-03-01'),
+       (3, 10, 18.71, '2023-06-18', '2024-06-12'),
+       (7, 1, 7.99, '2023-11-06', '2024-08-01'),
+       (8, 3, 15.99, '2021-01-20', '2023-09-12'),
+       (6, 1, 7.99, '2023-12-07', '2024-04-06'),
+       (5, 9, 17.31, '2020-05-03', '2024-08-25'),
+       (7, 8, 19.67, '2021-06-01', '2021-12-01'),
+       (8, 2, 12.99, '2024-06-17', '2025-05-03'),
+       (9, 7, 9.04, '2023-02-08', '2023-05-02'),
+       (6, 7, 9.04, '2022-02-18', '2023-12-16');
 
 INSERT INTO Invoice (invoice_id, payment_id, issued_date, total_amount, tax_amount, billing_address, invoice_file_url)
 VALUES
