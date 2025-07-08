@@ -1,12 +1,12 @@
 SELECT
-  c.content_id,
-  c.title,
-  c.type,
-  c.release_year,
-  COUNT(w.profile_id) AS view_count
+    c.content_id,
+    c.content_title,
+    c.content_type,
+    c.release_date,
+    COUNT(w.profile_id) AS view_count
 FROM Content c
-LEFT JOIN WatchHistory w ON c.content_id = w.content_id
-WHERE c.title LIKE CONCAT('%', :keyword, '%')
-GROUP BY c.content_id, c.title, c.type, c.release_year
-ORDER BY view_count DESC, c.release_year DESC
+         LEFT JOIN WatchHistory w ON c.content_id = w.content_id
+WHERE c.content_title ILIKE '%' || ${keyword} || '%'
+GROUP BY c.content_id, c.content_title, c.content_type, c.release_date
+ORDER BY view_count DESC, c.release_date DESC
 LIMIT 10;

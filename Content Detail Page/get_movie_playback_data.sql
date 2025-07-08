@@ -1,10 +1,11 @@
 SELECT
-  content_id,
-  title,
-  description,
-  duration,
-  content_url,
-  age_rating,
-  language
+    content_id,
+    content_title,
+    content_description,
+    duration,
+    release_date,
+    age_rating,
+    genres,
+    content_type
 FROM Content
-WHERE content_id = :content_id AND type = 'movie';
+WHERE content_id = ${content_id} AND content_type = 'Movie';
