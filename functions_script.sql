@@ -368,7 +368,7 @@ CREATE OR REPLACE FUNCTION get_featured_content()
     LANGUAGE plpgsql
 AS $$
 BEGIN
-    SELECT c.content_id, c.title, c.description, c.type, c.release_year, c.language, c.age_rating
+    SELECT c.content_id, c.content_title, c.content_description, c.content_type, c.release_date, c.genres, c.age_rating
     FROM Content c
              JOIN ContentGenre cg ON c.content_id = cg.content_id
     WHERE cg.genre_id IN (
@@ -385,7 +385,7 @@ BEGIN
         FROM WatchHistory
         WHERE profile_id = :profile_id
     )
-    ORDER BY c.release_year DESC, c.content_id DESC
+    ORDER BY c.release_date DESC, c.content_id DESC
     LIMIT 1;
 END;
 $$;
@@ -722,7 +722,7 @@ CREATE OR REPLACE FUNCTION get_featured_content()
     LANGUAGE plpgsql
 AS $$
 BEGIN
-    SELECT c.content_id, c.title, c.description, c.type, c.release_year, c.language, c.age_rating
+    SELECT c.content_id, c.content_title, c.content_description, c.content_type, c.release_date, c.age_rating, c.genres
     FROM Content c
              JOIN ContentGenre cg ON c.content_id = cg.content_id
     WHERE cg.genre_id IN (
@@ -739,7 +739,7 @@ BEGIN
         FROM WatchHistory
         WHERE profile_id = :profile_id
     )
-    ORDER BY c.release_year DESC, c.content_id DESC
+    ORDER BY c.release_date DESC, c.content_id DESC
     LIMIT 1;
 END;
 $$;
@@ -990,8 +990,8 @@ CREATE OR REPLACE FUNCTION admin_add_subscription_plan()
     LANGUAGE plpgsql
 AS $$
 BEGIN
-    INSERT INTO subscriptionplan (subscription_plan_id,name, price, resolution, max_streams)
-    VALUES (${subscription_plan_id}, ${name}, ${price}, ${resolution}, ${max_streams});
+    INSERT INTO subscriptionplan (name, price, resolution, max_streams)
+    VALUES ( ${name}, ${price}, ${resolution}, ${max_streams});
 
     --testing purposes-
     -- SELECT * FROM subscriptionplan
@@ -1000,20 +1000,26 @@ END;
 $$;
 
 
-create function admin_add_content(p_admin_id integer, p_title character varying, p_description text, p_type character varying, p_duration integer, p_genres character varying, p_release_date date, p_age_rating character varying) returns void
-    language plpgsql
-as
-$$
+CREATE OR REPLACE FUNCTION admin_add_content(
+    p_admin_id INT,
+    p_title VARCHAR,
+    p_description TEXT,
+    p_type VARCHAR,
+    p_duration INT,
+    p_genres VARCHAR,
+    p_release_date DATE,
+    p_age_rating VARCHAR
+) RETURNS VOID AS $$
 DECLARE
     new_content_id INT;
 BEGIN
     -- Insert new content
     INSERT INTO Content (
-        content_id, content_title, content_description, content_type,
+        content_title, content_description, content_type,
         duration, genres, release_date, age_rating
     )
     VALUES (
-               DEFAULT, p_title, p_description, p_type,
+               p_title, p_description, p_type,
                p_duration, p_genres, p_release_date, p_age_rating
            )
     RETURNING content_id INTO new_content_id;
@@ -1022,5 +1028,5 @@ BEGIN
     INSERT INTO ContentUploadLog (admin_id, content_id)
     VALUES (p_admin_id, new_content_id);
 END;
-$$;
+$$ LANGUAGE plpgsql;
 

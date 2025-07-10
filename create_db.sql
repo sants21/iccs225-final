@@ -307,3 +307,30 @@ VALUES
     (8, 8, '2024-12-15', 12.99, 0.75, '25791 Wendy Wall, Kristenburgh, IA 65438', 'http://nguyen.org/'),
     (9, 9, '2023-03-22', 9.04, 1.05, '963 Newton Isle, Turnermouth, NM 78277', 'https://torres-dunn.com/'),
     (10, 10, '2023-04-21', 9.04, 0.56, '63113 Anthony Ports, North Jenniferbury, LA 25858', 'https://cantu.com/');
+
+INSERT INTO ContentUploadLog (admin_id, content_id, uploaded_at)
+VALUES
+    (1, 1, '2024-07-29 10:00:00'),
+    (2, 2, '2023-08-17 11:30:00'),
+    (3, 3, '2024-06-07 14:45:00'),
+    (4, 4, '2022-12-28 09:15:00'),
+    (5, 5, '2024-02-22 16:20:00'),
+    (6, 6, '2024-02-19 12:00:00'),
+    (7, 7, '2021-06-01 08:30:00'),
+    (8, 8, '2024-12-15 10:45:00'),
+    (9, 9, '2023-03-22 13:00:00'),
+    (10, 10, '2023-04-21 15:30:00');
+
+INSERT INTO AdminUser (admin_id, username, password_hash)
+VALUES
+    (1, 'admin1', '5f4dcc3b5aa765d61d8327deb882cf99'),
+    (2, 'admin2', '6dcd4c2f1d3b5a8e6f7d8e90b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7g8h9i'),
+    (3, 'admin3', '7c6a180b36896a0a8c02787eeafb0e4c7b3f5d6e7'),
+    (4, 'admin4', '8f14e45fceea167a5a36dedd4bea2543'),
+    (5, 'admin5', '9b74c9897bac770ffc029102a200c5de'),
+    (6, 'admin6', '2c6ee24b09816a6f14f95d1698b24ead'),
+    (7, 'admin7', '3c59dc048e8850243be8079a5c74d079'),
+    (8, 'admin8', '4e732ced3463d06de0ca9a15b6153677'),
+    (9, 'admin9', '5d41402abc4b2a76b9719d911017c592'),
+    (10, 'admin10', '6dcd4ce23d88e2ee9568ba546c007c63');
+    
